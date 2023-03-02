@@ -1,0 +1,212 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WD101 - Registration Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex flex-col items-center justify-center my-16">
+    <div class="bg-white rounded shadow w-96 p-6 h-fit">
+      <h2 class="text-center text-xl font-bold">Registration Form</h2>
+      <form class="mt-10 flex flex-col gap-3" onsubmit="onFormSubmit(event)">
+        <div class="flex items-center justify-between">
+          <label for="name" class="text-lg font-semibold">Name</label>
+          <input
+            id="name"
+            required
+            class="bg-gray-50 p-2 rounded shadow-sm border min-w-[200px]"
+            placeholder="Enter a name"
+          />
+        </div>
+
+        <div class="flex items-center justify-between">
+          <label for="email" class="text-lg font-semibold">Email</label>
+          <input
+            id="email"
+            type="email"
+            required
+            class="bg-gray-50 p-2 rounded shadow-sm border min-w-[200px]"
+            placeholder="Enter an email"
+          />
+        </div>
+
+        <div class="flex items-center justify-between">
+          <label for="password" class="text-lg font-semibold">Password</label>
+          <input
+            id="password"
+            type="password"
+            required
+            class="bg-gray-50 p-2 rounded shadow-sm border min-w-[200px]"
+            placeholder="Enter a password"
+          />
+        </div>
+
+        <div class="flex items-center justify-between">
+          <label for="dob" class="text-lg font-semibold">Date of Birth</label>
+          <input
+            id="dob"
+            type="date"
+            required
+            class="bg-gray-50 p-2 rounded shadow-sm border min-w-[200px]"
+          />
+        </div>
+
+        <div class="flex flex-row-reverse items-center justify-end gap-6 mt-2">
+          <label for="tac" class="text-sm text-gray-700"
+            >Accept Terms & Conditions</label
+          >
+          <input
+            id="tac"
+            type="checkbox"
+            required
+            class="bg-gray-50 p-2 rounded shadow-sm border"
+          />
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button
+            type="submit"
+            class="p-2 px-4 text-white bg-green-500 rounded shadow-sm"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white rounded shadow p-6 h-fit mt-10">
+      <h2 class="text-center text-xl font-bold mb-6">Entries</h2>
+      <table id="entries" class="min-w-full divide-y divide-gray-200 rounded">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Email
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Password
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Dob
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Accepted terms?
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200" x-max="1"></tbody>
+      </table>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById("name");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const dobInput = document.getElementById("dob");
+        const termsInput = document.getElementById("tac");
+        const entriesTable = document.getElementById("entries");
+
+        const setMinMaxForDob = () => {
+        const today = new Date();
+        const minDate = new Date(
+            `${today.getFullYear() - 55}-${today.getMonth() + 1}-${today.getDate()}`
+        )
+            .toISOString()
+            .slice(0, 10);
+        const maxDate = new Date(
+            `${today.getFullYear() - 18}-${today.getMonth() + 1}-${today.getDate()}`
+        )
+            .toISOString()
+            .slice(0, 10);
+
+        dobInput.setAttribute("min", minDate);
+        dobInput.setAttribute("max", maxDate);
+        };
+
+        const addUserToEntriesTable = (user) => {
+        const tableContent = `
+                <td
+                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                >
+                    ${user.name}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${user.email}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${user.password}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${user.dob}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    True
+                </td>
+            `;
+        const tableRow = document.createElement("tr");
+        tableRow.innerHTML = tableContent;
+
+        const tableBody = entriesTable.getElementsByTagName("tbody")[0];
+        tableBody.appendChild(tableRow);
+        };
+
+        const addUserToLocalStorage = (user) => {
+        const users = JSON.parse(localStorage.getItem("users") ?? "[]");
+        users.push(user);
+
+        localStorage.setItem("users", JSON.stringify(users));
+        };
+
+        const getUsersFromLocalStorage = () => {
+        return JSON.parse(localStorage.getItem("users") ?? "[]");
+        };
+
+        const populateInitialUsersInEntriesTable = () => {
+        const users = getUsersFromLocalStorage();
+        users.forEach(addUserToEntriesTable);
+        };
+
+        const clearForm = () => {
+        nameInput.value = "";
+        emailInput.value = "";
+        passwordInput.value = "";
+        dobInput.value = "";
+        termsInput.checked = false;
+        };
+
+        const onFormSubmit = (e) => {
+        e.preventDefault();
+
+        const name = nameInput.value;
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const dob = dobInput.value;
+        const user = { name, email, password, dob };
+        addUserToLocalStorage(user);
+        addUserToEntriesTable(user);
+        clearForm();
+        };
+
+        setMinMaxForDob();
+        populateInitialUsersInEntriesTable();
+    </script>
+  </body>
+</html>
