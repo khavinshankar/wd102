@@ -8,7 +8,9 @@ const todoList = () => {
   };
 
   const overdue = () => {
-    return all.filter((todo) => new Date(todo.dueDate) < new Date());
+    return all.filter(
+      (todo) => new Date(todo.dueDate) < new Date(formattedDate(new Date()))
+    );
   };
 
   const dueToday = () => {
