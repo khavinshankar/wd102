@@ -1,7 +1,7 @@
 <div>
   <div class="flex gap-2 items-center">
     <h5 class="text-xl font-semibold"><%= title %></h5>
-    <span id="count-<%= title.replaceAll(" ", "-").toLowerCase() %>" class="py-1 px-4 text-sm bg-gray-300 rounded"
+    <span id="count-<%= title.replace(/\s/g, "-").toLowerCase() %>" class="py-1 px-4 text-sm bg-gray-300 rounded"
       ><%= todos?.length %></span
     >
   </div>
