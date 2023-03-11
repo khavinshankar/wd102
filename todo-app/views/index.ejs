@@ -12,15 +12,17 @@
       <div class="col-start-3 col-span-2">
         <%- include("header.ejs") %>
         <section class="my-2">
-          <form class="flex gap-2 items-center justify-evenly">
+          <form action="/todos" method="post" class="flex gap-2 items-center justify-evenly">
             <input
               type="text"
+              name="title"
               placeholder="What's next?"
               class="p-2 rounded shadow border border-gray-300 text-gray-900 w-full leading-5"
             />
 
             <input
               type="date"
+              name="dueDate"
               placeholder="What's next?"
               class="p-2 rounded shadow border border-gray-300 text-gray-900 w-full leading-4"
             />
