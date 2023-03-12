@@ -39,5 +39,15 @@
         dueTodayTodos}) %>
       </div>
     </div>
+
+    <script>
+      const updateTodo = (id, completed) => {
+        fetch(`/todos/${id}/markAsCompleted`, { method: "put" }).then((res) => {if (res.ok) window.location.reload()})
+      }
+
+      const deleteTodo = (id) => {
+        fetch(`/todos/${id}`, { method: "delete" }).then((res) => {if (res.ok) window.location.reload()})
+      }
+    </script>
   </body>
 </html>
