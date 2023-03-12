@@ -3,6 +3,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf" content="<%= _csrf %>" />
     <title>My Todo App</title>
     <link rel="stylesheet" href="./css/styles.css" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,6 +14,8 @@
         <%- include("header.ejs") %>
         <section class="my-2">
           <form action="/todos" method="post" class="flex gap-2 items-center justify-evenly">
+            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+
             <input
               type="text"
               name="title"
@@ -41,12 +44,20 @@
     </div>
 
     <script>
+      const _csrf = document.querySelector("meta[name=csrf]").getAttribute("content");
+
       const updateTodo = (id, completed) => {
-        fetch(`/todos/${id}/markAsCompleted`, { method: "put" }).then((res) => {if (res.ok) window.location.reload()})
+        fetch(
+          `/todos/${id}/markAsCompleted`, 
+          { method: "put", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ _csrf }) }
+        ).then((res) => {if (res.ok) window.location.reload()})
       }
 
       const deleteTodo = (id) => {
-        fetch(`/todos/${id}`, { method: "delete" }).then((res) => {if (res.ok) window.location.reload()})
+        fetch(
+          `/todos/${id}`, 
+          { method: "delete", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ _csrf }) }
+        ).then((res) => {if (res.ok) window.location.reload()})
       }
     </script>
   </body>

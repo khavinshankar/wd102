@@ -1,10 +1,14 @@
 const path = require("path");
+const csrf = require("csurf");
+const cookieParser = require("cookie-parser");
 const express = require("express");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser(process.env.COOKIE_PARSER_SECRET || ""));
+app.use(csrf({ cookie: true }));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -16,9 +20,11 @@ app.get("/", async function (request, response) {
   const dueLaterTodos = await Todo.dueLater();
   if (request.accepts("html")) {
     response.render("index", {
+      todos,
       overdueTodos,
       dueLaterTodos,
       dueTodayTodos,
+      _csrf: request.csrfToken(),
     });
   } else {
     response.json({ todos });
