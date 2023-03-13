@@ -19,6 +19,7 @@
             <input
               type="text"
               name="title"
+              required
               placeholder="What's next?"
               class="p-2 rounded shadow border border-gray-300 text-gray-900 w-full leading-5"
             />
@@ -26,6 +27,7 @@
             <input
               type="date"
               name="dueDate"
+              required
               placeholder="What's next?"
               class="p-2 rounded shadow border border-gray-300 text-gray-900 w-full leading-4"
             />
@@ -48,8 +50,8 @@
 
       const updateTodo = (id, completed) => {
         fetch(
-          `/todos/${id}/markAsCompleted`, 
-          { method: "put", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ _csrf }) }
+          `/todos/${id}`, 
+          { method: "put", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ _csrf, completed }) }
         ).then((res) => {if (res.ok) window.location.reload()})
       }
 

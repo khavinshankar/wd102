@@ -39,7 +39,7 @@ describe("Todo Application", function () {
     expect(response.statusCode).toBe(302);
   });
 
-  test("Marks a todo with the given ID as complete", async () => {
+  test("Marks a todo with the given ID as complete and unmarks it", async () => {
     const initialLength = JSON.parse(
       (await agent.get("/").set("Accept", "application/json"))?.text
     )?.todos?.length;
@@ -48,7 +48,6 @@ describe("Todo Application", function () {
     await agent.post("/todos").send({
       title,
       dueDate: new Date().toISOString(),
-      completed: false,
       _csrf: await getCsrfToken(),
     });
 
@@ -62,10 +61,18 @@ describe("Todo Application", function () {
     expect(latestTodo?.completed).toBe(false);
 
     const markCompleteResponse = await agent
-      .put(`/todos/${latestTodo?.id}/markASCompleted`)
-      .send({ _csrf: await getCsrfToken() });
-    const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
-    expect(parsedUpdateResponse.completed).toBe(true);
+      .put(`/todos/${latestTodo?.id}`)
+      .send({ _csrf: await getCsrfToken(), completed: true });
+    const parsedMarkCompleteResponse = JSON.parse(markCompleteResponse.text);
+    expect(parsedMarkCompleteResponse.completed).toBe(true);
+
+    const unmarkCompleteResponse = await agent
+      .put(`/todos/${latestTodo?.id}`)
+      .send({ _csrf: await getCsrfToken(), completed: false });
+    const parsedUnMarkCompleteResponse = JSON.parse(
+      unmarkCompleteResponse.text
+    );
+    expect(parsedUnMarkCompleteResponse.completed).toBe(false);
   });
 
   test("Fetches all todos in the database using /todos endpoint", async () => {

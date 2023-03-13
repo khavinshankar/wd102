@@ -15,31 +15,50 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll();
     }
 
-    static async overdue() {
+    static async overdue(completed) {
       return await Todo.findAll({
         where: {
           dueDate: {
             [Op.lt]: new Date(),
           },
-        },
-      });
-    }
-
-    static async dueToday() {
-      return await Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.eq]: new Date(),
+          completed: {
+            [Op.or]: completed ? [true, false] : [false],
           },
         },
       });
     }
 
-    static async dueLater() {
+    static async dueToday(completed) {
+      return await Todo.findAll({
+        where: {
+          dueDate: {
+            [Op.eq]: new Date(),
+          },
+          completed: {
+            [Op.or]: completed ? [true, false] : [false],
+          },
+        },
+      });
+    }
+
+    static async dueLater(completed) {
       return await Todo.findAll({
         where: {
           dueDate: {
             [Op.gt]: new Date(),
+          },
+          completed: {
+            [Op.or]: completed ? [true, false] : [false],
+          },
+        },
+      });
+    }
+
+    static async completed() {
+      return await Todo.findAll({
+        where: {
+          completed: {
+            [Op.eq]: true,
           },
         },
       });
@@ -49,8 +68,8 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({ title, dueDate, completed: false });
     }
 
-    markAsCompleted() {
-      return this.update({ completed: true });
+    setCompletionStatus(completed) {
+      return this.update({ completed });
     }
 
     delete() {

@@ -8,7 +8,7 @@
   <ul class="list-none flex flex-col gap-2 mt-4">
     <% for(todo of todos) { %>
     <li class="flex gap-4 items-center w-fit mx-4 todo-item">
-      <input id="<%= todo?.id %>" type="checkbox" onchange="updateTodo(Number('<%= todo?.id %>'), Boolean('<%= !todo?.completed %>'))" <%= todo?.completed &&
+      <input id="<%= todo?.id %>" type="checkbox" onchange="updateTodo(Number('<%= todo?.id %>'), JSON.parse('<%= !todo?.completed %>'))" <%= todo?.completed &&
       "checked" %> class="w-4 h-4 text-blue-600 bg-gray-100 rounded border" />
       <label for="<%= todo?.id %>" class="text-sm text-gray-500"
         ><%= todo?.title %></label
