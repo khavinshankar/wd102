@@ -13,6 +13,8 @@
       <div class="col-start-3 col-span-2">
         <%- include("header.ejs", { user }) %>
 
+        <%- include("partials/flash.ejs", { messages: locals.messages }) %>
+
         <section class="my-2">
           <form action="/todos" method="post" class="flex gap-2 items-center justify-evenly">
             <input type="hidden" name="_csrf" value="<%= _csrf %>" />
@@ -20,7 +22,6 @@
             <input
               type="text"
               name="title"
-              required
               placeholder="What's next?"
               class="p-2 rounded shadow border border-gray-300 text-gray-900 w-full leading-5"
             />
@@ -28,7 +29,6 @@
             <input
               type="date"
               name="dueDate"
-              required
               placeholder="What's next?"
               class="p-2 rounded shadow border border-gray-300 text-gray-900 w-full leading-4"
             />

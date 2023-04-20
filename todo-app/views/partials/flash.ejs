@@ -1,0 +1,14 @@
+<ul class="absolute right-0 top-0 mt-8 mr-8">
+    <% if(locals.messages && Object.keys(messages).length > 0)  { %>
+        <% Object.keys(messages).forEach((type) => { %>
+            <% messages[type].forEach((message, i) => { %>
+                <li id="flash_<%=type%>_<%=i%>" class="list-none p-4 px-6 shadow-sm bg-<%= type === "error" ? "red" : type === "success" ? "green" : "blue" %>-400 text-white flex justify-between items-center rounded-sm min-w-[300px] gap-6"> <%= message %>
+                    <span onclick="(() => {
+                    const message = document.getElementById('flash_<%=type%>_<%=i%>');
+                    message.classList += ' hidden';
+                    })()" class="cursor-pointer">x</span>
+                </li>
+            <% }) %>
+      <% }) %>
+    <% } %>
+</ul>

@@ -9,6 +9,7 @@ const LocalStrategy = require("passport-local");
 const session = require("express-session");
 const connectEnsureLogin = require("connect-ensure-login");
 const bcrypt = require("bcrypt");
+const flash = require("connect-flash");
 
 const saltRounds = 10;
 const app = express();
@@ -20,6 +21,9 @@ app.use(csrf({ cookie: true }));
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
+
+app.set("views", path.join(__dirname, "views"));
+app.use(flash());
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 app.use(
@@ -42,7 +46,8 @@ passport.use(
       User.findOne({ where: { email: username } })
         .then(async (user) => {
           const isMatch = await bcrypt.compare(password, user.password);
-          if (!isMatch) return done("Invalid Password");
+          if (!isMatch)
+            return done(null, false, { message: "Invalid password" });
 
           return done(null, user);
         })
@@ -80,6 +85,7 @@ app.get(
         completedTodos,
         _csrf: request.csrfToken(),
         user: request.user,
+        messages: request.flash(),
       });
     } else {
       response.json({ todos });
@@ -115,13 +121,21 @@ app.post("/users", async (request, response) => {
   }
 });
 
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
+
 app.get(["/login", "/signin"], (request, response) => {
   response.render("signin", { _csrf: request.csrfToken() });
 });
 
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
   (request, response) => {
     response.redirect("/todos");
   }
@@ -171,10 +185,18 @@ app.post(
   async function (request, response) {
     try {
       await Todo.addTodo({ ...request.body, userId: request.user?.id });
+      request.flash("success", "Successfully added a todo.");
       return response.redirect("/todos");
-    } catch (error) {
-      console.log(error);
-      return response.status(422).json(error);
+    } catch (err) {
+      if (err.name === "SequelizeValidationError") {
+        request.flash(
+          "error",
+          err.errors.map((error) => error.message)
+        );
+        return response.redirect("/todos");
+      }
+
+      return response.status(422).json(err);
     }
   }
 );
