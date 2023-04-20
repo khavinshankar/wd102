@@ -94,7 +94,10 @@ app.get(
 );
 
 app.get("/signup", (request, response) => {
-  response.render("signup", { _csrf: request.csrfToken() });
+  response.render("signup", {
+    messages: request.flash(),
+    _csrf: request.csrfToken(),
+  });
 });
 
 app.post("/users", async (request, response) => {
@@ -116,8 +119,15 @@ app.post("/users", async (request, response) => {
 
       response.redirect("/todos");
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
+    if (err.name === "SequelizeValidationError") {
+      request.flash(
+        "error",
+        err.errors.map((error) => error.message)
+      );
+      return response.redirect("/signup");
+    }
   }
 });
 

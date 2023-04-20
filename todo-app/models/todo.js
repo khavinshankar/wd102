@@ -94,9 +94,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
-          len: {
-            args: 5,
-            msg: "The title should be atleast 5 characters long.",
+          notEmpty: {
+            msg: "The title can't be empty.",
           },
         },
       },
