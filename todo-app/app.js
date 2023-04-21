@@ -137,7 +137,7 @@ app.use(function (request, response, next) {
 });
 
 app.get(["/login", "/signin"], (request, response) => {
-  response.render("signin", { _csrf: request.csrfToken() });
+  response.render("login", { _csrf: request.csrfToken() });
 });
 
 app.post(

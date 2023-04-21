@@ -13,7 +13,7 @@
       <div class="col-start-3 col-span-2">
         <%- include("header.ejs", { user }) %>
 
-        <%- include("partials/flash.ejs", { messages: locals.messages }) %>
+        <%- include("flash.ejs", { messages: locals.messages }) %>
 
         <section class="my-2">
           <form action="/todos" method="post" class="flex gap-2 items-center justify-evenly">
@@ -43,10 +43,10 @@
         </section>
        
         <section class="my-6 flex flex-col gap-6">
-            <%- include("partials/todo-section.ejs", {title: "Overdue", todos: overdueTodos}) %>
-            <%- include("partials/todo-section.ejs", {title: "Due Today", todos: dueTodayTodos}) %>
-            <%- include("partials/todo-section.ejs", {title: "Due Later", todos: dueLaterTodos}) %>
-            <%- include("partials/todo-section.ejs", {title: "Completed Items", todos: completedTodos}) %>
+            <%- include("todo.ejs", {title: "Overdue", todos: overdueTodos}) %>
+            <%- include("todo.ejs", {title: "Due Today", todos: dueTodayTodos}) %>
+            <%- include("todo.ejs", {title: "Due Later", todos: dueLaterTodos}) %>
+            <%- include("todo.ejs", {title: "Completed Items", todos: completedTodos}) %>
         </section>
       </div>
     </div>
